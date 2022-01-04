@@ -98,7 +98,7 @@ class ManagerSystem(object):
                 print(f'Student {del_name} has been removed successfully from the system.')
                 break #注意该处要用退出
         else: #可以在循环体外执行if...else 的另一半
-            print(f'There is no such a {del_name} existing currently.')
+            print(f'There is no such a {del_name} existing currently...')
 
     def modify_student(self):
         print('Modify the information of a student')
