@@ -58,8 +58,8 @@ class ManagerSystem(object):
         print('\t\t\tDelete a student-----2')
         print('\t\t\tModify a student information-----3')
         print('\t\t\tSearch a student-----4')
-        print('\t\t\tShow a student information-----5')
-        print('\t\t\tSave a student information-----6')
+        print('\t\t\tShow student information-----5')
+        print('\t\t\tSave student information-----6')
         print('\t\t\tExit the system-----7')
         print('================================================================')
 
@@ -83,7 +83,6 @@ class ManagerSystem(object):
         print(self.student_list)
         print(student)
 
-
     def del_student(self):
         '''
             输入一个学员的姓名，然后在 self.student_list中查询该名字，如果不存在，输出提示信息；如果存在删除
@@ -101,19 +100,93 @@ class ManagerSystem(object):
             print(f'There is no such a {del_name} existing currently...')
 
     def modify_student(self):
+        '''
+        1.首先,利用input()输入一个学生的姓名；
+        2. 在self.student_list中查询是否存在这样一个学生，如果存在，则利用input进行赋值修改
+        3. 如果不存在，则在for循环外部，进行else判断的另一项操作
+        :return:
+        '''
         print('Modify the information of a student')
+        modi_stud = input('Please input a student name whose information you want to modify')
+        for stud in self.student_list:
+            if stud.name == modi_stud:
+                stud.name = input('Please input a name you want to update')
+                stud.gender = input('Please input a gender you want to update')
+                stud.tel = input('Please input a tel no you want to update')
+                print(f'Student {modi_stud} information update successfully!')
+                break
+        else: #表示遍历了所有的元素都没有找到满足条件的值
+            print('There is no such a student existing in the system.')
+
 
     def search_student(self):
+        '''
+        1. input输入要查询的学生的姓名
+        2. 判断是否存在于学生的列表中，如果存在显示其信息
+        3. 如果不存在显示提示信息
+        :return:
+        '''
         print('Search a student')
+        search_stud = input('Please input a student name that you want to search in the student list:')
+        for stud in self.student_list:
+            if stud.name == search_stud:
+                print(f"Student info:\nName: {stud.name}, Gender: {stud.gender}, Tel: {stud.tel}")
+                break
+        else:
+            print('There is no such a student existing in the system.')
 
     def show_student(self):
+        '''
+        显示所有的学员的信息
+        :return:
+        '''
         print('Show the information of a student')
+        print('Name\tGender\tTel')
+        for stud in self.student_list:
+            print(f'{stud.name}\t{stud.gender}\t{stud.tel}')
 
     def save_student(self):
         print('Save the information of a student')
+        '''
+        类的一个对象的__dict__属性能够将该对象的所有的属性与其值组成一个字典
+        for stud in self.student_list:
+            print(stud.__dict__)
+        '''
+
+        with open('data\student.data', 'w') as file:
+            for stud in self.student_list:
+                # file.write(f'Name: {stud.name}\tGender: {stud.gender}\tTel: {stud.tel}\n')
+                file.write(str(stud.__dict__)+'\n')
+            file.close()
 
     def load_student(self):
+        '''
+        1. 打开文件
+            try:
+            except:
+            只读形式打开，如果打不开则说明文件不存在，就用w形式打开
+        2. 写入数据--注意self.student_list中存放的是学生对象，因此应该把数据转换成对象
+        :return:
+        '''
         print('Load student data...')
+        try:
+            f = open('data\student.data', 'r')
+        except: # 如果不存在则直接新建一个文件
+            f = open('data\student.data', 'w')
+        else:
+            # eval的用法，----去字符串化，将字符串形式的数据转换成本来的样子
+            stud_list = [eval(student) for student in f.readlines()]
+            self.student_list = [Student(stud['name'], stud['gender'], stud['tel']) for stud in stud_list]
+            print('Student data has been loaded!')
+        finally:
+            f.close()
+        # ##################################################################
+        # f.read()方法能够一次性读出所有的数据
+        # for t in f.read().split('\n'):
+        #     print(t)
+        #     print(type(t))
+        #     print(eval(t)['name'])
+
 
 
 
